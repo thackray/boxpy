@@ -31,24 +31,46 @@ def get_f_ddt(K, s):
 
     Arguments:
     K - matrix of flows; shape = (len(c),len(c))
-    s - vector of forcings; shape = len(c)
+    s - function to return vector of forcings; shape = len(c)
 
     Returns:
     f_ddt - function to be passed to odeint
     """
 
     def f_ddt(c,t):
-        dcdt = np.dot(K,c)+s
+        dcdt = np.dot(K,c)+s(t)
         return dcdt
 
     return f_ddt
 
+def construct_K(from_i_to_j, names):
+    """Construct the model operator K from dictionary of flows.
+
+    Use the dictionary from_i_to_j and the list of compartment names
+    to construct the K operator necessary.
+
+    Arguments:
+    from_i_to_j - dictionary with the structure { 'comp1' : {'comp1:X1,...'compN:XN}, ... 'compN':{...}} where the upper level dictionary is where the fluxes are from and the sub-dictionaries are where the flows are to
+    names - list of the compartment names used in from_i_to_j
+
+    Returns:
+    K - matrix operator for f_ddt
+    """
+    K = np.zeros((len(names),len(names)))
+    for i,namei in enumerate(names):
+        for j,namej in enumerate(names):
+            K[j,i] += from_i_to_j[namei][namej]
+            if i != j:
+                K[i,i] -= from_i_to_j[namei][namej]
+    return K
+
 
 if __name__=="__main__":
     
-    K = np.array([[-1.1,0.],
-                  [0.1,0]])
-    s = [1,0]
+    K = np.array([[0,1.],
+                  [0,-1]])
+    def s(t):
+        return [0,1]
     c0 = [1,0]
     t = np.linspace(0,10,10)
     solution = solve_odeint(get_f_ddt(K,s),c0,t)
