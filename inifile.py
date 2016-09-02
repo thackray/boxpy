@@ -1,0 +1,21 @@
+# Initial conditions # from geogenic equilibrium
+    
+ini = {'atm': 487,
+       'land_arm': 81000,
+       'land_fast': 850,
+       'land_slow': 4850,
+       'nor_at': 2409,
+       'deep_nor_at': 3550,
+       'sfc_at': 526,
+       'int_at': 6417.,
+       'deep_at': 15260.,
+       'bot_at': 5900.,
+       'med_sea': 190.,
+       'deep_med': 1500.,
+       'sou_oc': 2000.,
+       'deep_sou_oc': 3020.,
+       'int_pac': 5400.,
+       'deep_pac': 50810.,
+       'sfc_pac': 260.,
+       'nor_pac': 2500.,
+        }
