@@ -52,7 +52,7 @@ cc=1
 pl.subplot(2,2,cc)
 pl.plot(t,[s(tt)[0] for tt in t], label='emis')
 pl.legend(loc='lower right')
-pl.xlim(1840,2050)
+pl.xlim(1800,2050)
 
 cc+=1
 for i in [0,3,-1]:
@@ -64,5 +64,13 @@ for i in [0,3,-1]:
 
 
 cs = np.sum(c,axis=1)
+
+# Lifetimes in compartments for 2015:
+c2015 = c[2015+2000,:]
+lossK = np.diagonal(K)
+print(lossK)
+dcdt_loss = -1*c2015*lossK
+for i,comp in enumerate(compartments):
+    print(comp, c2015[i]/dcdt_loss[i])
 
 pl.show()
