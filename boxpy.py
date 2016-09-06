@@ -65,11 +65,11 @@ def construct_K(from_i_to_j, names):
     return K
 
 
-def make_fromfile_to_fill(filename, compartments):
+def make_flowfile_to_fill(filename, compartments):
     """use compartment names to create a file to fill with flows"""
     return
 
-def load_fromfile(filename):
+def load_flowfile(filename):
     """Read filename to make from_i_to_j"""
     return
 
