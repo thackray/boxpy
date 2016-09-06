@@ -4,6 +4,7 @@ from boxpy import *
 import pylab as pl
 from inifile import ini
 from fromfile import froms
+from scipy.interpolate import interp1d
 
 
 compartments = ['atm','land_arm','land_fast','land_slow',
@@ -17,32 +18,26 @@ K = construct_K(froms,compartments)
 geogen = np.zeros(len(compartments))
 geogen[0] = 90.
 
-def s(tt):
-    """Emissions forcing function"""
-    extra = np.zeros_like(geogen)
-    if tt < 1050:
-        pass
-    elif tt < 1850:
-        extra[0] += 500.
-    elif tt < 1950:     
-        extra[0] += 500 + 2000*np.exp((-(tt-1890)**2)/(20**2))
-    elif tt < 2000:
-        extra[0] += 500. + 1000*(tt-1950)/50.
-    elif tt < 2100:
-        extra[0] += 1500. + 3000*(tt-2000)/50.
 
-    return geogen + extra
+#emisfile = np.genfromtxt('AnthroEmissAllTime_20120112_2.txt')
+emisfile = np.genfromtxt('anthro_alltime_zero.txt')
+eyears = emisfile[:,0]
+estreets = np.zeros((len(eyears),len(compartments)))
+estreets[:,0] = emisfile[:,1]
+estreets += geogen
+
+s = get_s_from_timeseries(eyears,estreets)
 
 c0 = np.array([ini[name] for name in compartments])
 
 t = np.linspace(-2000,2050,4051)
 c = solve_odeint(get_f_ddt(K,s),c0,t)
 
-
+pl.figure(figsize=(12,9))
 cc=1
 pl.subplot(2,2,cc)
 pl.plot(t,[s(tt)[0] for tt in t], label='emis')
-pl.legend()
+pl.legend(loc='lower right')
 pl.xlim(1840,2050)
 
 cc+=1
@@ -50,13 +45,10 @@ for i in [0,3,-1]:
     pl.subplot(2,2,cc)
     pl.plot(t[:],c[:,i],label=compartments[i])
     pl.xlim(1800,2050)
-    pl.legend()
+    pl.legend(loc='lower right')
     cc += 1
 
 
 cs = np.sum(c,axis=1)
-#pl.figure()
-#pl.plot(t,cs)
-print((cs[-1]-cs[0])/4050.)
 
 pl.show()

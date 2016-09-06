@@ -65,6 +65,59 @@ def construct_K(from_i_to_j, names):
     return K
 
 
+def make_fromfile_to_fill(filename, compartments):
+    """use compartment names to create a file to fill with flows"""
+    return
+
+def load_fromfile(filename):
+    """Read filename to make from_i_to_j"""
+    return
+
+def find_closest(x,ylist):
+    """Find the closest place in ylist to x."""
+    i = np.abs(ylist-x).argmin()
+    return i
+
+
+def get_s_from_timeseries(taxis,timeseries,interp=True):
+    """Get the model forcing function s from a given timeseries.
+
+    Given a time axis and a values axis for those times, will
+    give a functional form for use in odeint.
+
+    Arguments:
+    taxis - time axis (1D array)
+    timeseries - time series values (same shape as t)
+    
+    Keyword Arguments:
+    interp - Boolean. if True, will interpolate values. if False, will use closest value from timeseries 
+
+    Returns:
+    s - forcing function (with time as argument)
+    """
+    
+    assert len(taxis) == len(timeseries), "Time series length must match time axis"
+    assert len(set(taxis)) == len(taxis), "Time axis must not have duplicate values"
+
+    if interp:
+        if len(timeseries.shape) > 1:
+            d2len = timeseries.shape[1]
+        else:
+            d2len = 1
+        def s(tnew):
+            out = np.zeros(d2len)
+            for i in range(d2len):
+                out[i] = np.interp(tnew,taxis,timeseries[:,i])
+            return out
+    else:
+        def s(tnew):
+            return timeseries[find_closest(tnew,taxis)]
+    
+    return s
+
+
+
+
 if __name__=="__main__":
     
     K = np.array([[0,1.],
