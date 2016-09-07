@@ -12,9 +12,28 @@ from scipy.interpolate import interp1d
 # Name the compartments
 compartments = ['atm','land_arm','land_fast','land_slow',
                 'nor_at','deep_nor_at','sfc_at','int_at',
-                'deep_at','bot_at','med_sea','deep_med','sou_oc',
-                'deep_sou_oc','int_pac','deep_pac','sfc_pac',
-                'nor_pac']
+                'deep_at','bot_at','med_sea','deep_med',
+                'sou_oc','deep_sou_oc','int_pac','deep_pac',
+                'sfc_pac','nor_pac']
+
+comp_volumes = [1.,1.,1.,1.,
+                2.9e16, 3.6e16, 1.8e16, 1.e17, 
+                1.5e17, 4.9e16, 7.5e14, 3.0e15,
+                1.7e16, 3.5e16, 2.5e17, 5.4e17,
+                4.4e16, 4.1e16]
+
+comp_surfs = [1., 1., 1., 1.,
+              1.96e13, 1.96e13, 6.16e13, 2.04e13,
+              8.2e13, 8.2e13, 2.5e12, 2.5e12,
+              1.15e13, 1.15e13, 5e13, 2.25e14,
+              1.5e14, 2.7e13]   
+
+
+#Box volumes
+#2.9e16, 3.6e16, 1.8e16, 1.e17, 
+#1.5e17, 4.9e16, 7.5e14, 3.0e15,
+#4.1e16, 4.4e16, 2.5e17, 5.4e17, 
+#1.7e16, 3.5e16
 
 # Using the dictionary of flows in froms, make flow matrix
 K = construct_K(froms,compartments)
@@ -72,5 +91,8 @@ print(lossK)
 dcdt_loss = -1*c2015*lossK
 for i,comp in enumerate(compartments):
     print(comp, c2015[i]/dcdt_loss[i])
+
+# Ocean concentrations for 2015:
+
 
 pl.show()
